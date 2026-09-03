@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Work Time & Pay Tracker v9</title>
+  <title>Work Time & Pay Tracker v10</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
   <main class="app">
     <div class="header">
@@ -23,191 +22,83 @@
     </nav>
 
     <section id="currentPanel" class="tab-panel active">
-
-    <div class="grid">
-      <section class="card" id="payTaxCard">
-        <div class="card-heading">
-          <h2>Pay & Tax Settings</h2>
-          <button
-            id="togglePayTax"
-            class="collapse-btn"
-            type="button"
-            aria-expanded="true"
-            aria-controls="payTaxContent"
-            title="Collapse or expand Pay & Tax Settings"
-          >▼</button>
-        </div>
-
-        <div id="payTaxContent" class="collapsible-content">
-        <div class="field">
-          <label for="wage">Hourly Wage</label>
-          <input id="wage" class="required-field tax-field" type="number" min="0" step="0.01" placeholder="Example: 22.50">
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="filingStatus">Federal Filing Status</label>
-            <select id="filingStatus" class="required-field tax-field">
-              <option value="single">Single / Married Filing Separately</option>
-              <option value="married">Married Filing Jointly</option>
-              <option value="head">Head of Household</option>
-            </select>
+      <div class="grid">
+        <section class="card" id="payTaxCard">
+          <div class="card-heading">
+            <h2>Pay & Tax Settings</h2>
+            <button id="togglePayTax" class="collapse-btn" type="button" aria-expanded="true" aria-controls="payTaxContent" title="Collapse or expand Pay & Tax Settings">▼</button>
           </div>
-
-          <div class="field">
-            <label for="step2">Multiple Jobs / Spouse Works</label>
-            <select id="step2" class="required-field tax-field">
-              <option value="no">No</option>
-              <option value="yes">Yes — W-4 Step 2(c)</option>
-            </select>
+          <div id="payTaxContent" class="collapsible-content">
+            <div class="field"><label for="wage">Hourly Wage</label><input id="wage" class="required-field tax-field" type="number" min="0" step="0.01" placeholder="Example: 22.50"></div>
+            <div class="field-grid">
+              <div class="field"><label for="filingStatus">Federal Filing Status</label><select id="filingStatus" class="required-field tax-field"><option value="single">Single / Married Filing Separately</option><option value="married">Married Filing Jointly</option><option value="head">Head of Household</option></select></div>
+              <div class="field"><label for="step2">Multiple Jobs / Spouse Works</label><select id="step2" class="required-field tax-field"><option value="no">No</option><option value="yes">Yes — W-4 Step 2(c)</option></select></div>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label for="qualifyingChildren">Qualifying Children Under 17</label><input id="qualifyingChildren" class="required-field tax-field" type="number" min="0" step="1" value="0"></div>
+              <div class="field"><label for="otherDependents">Other Dependents</label><input id="otherDependents" class="required-field tax-field" type="number" min="0" step="1" value="0"></div>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label for="otherIncome">Other Income — W-4 Step 4(a)</label><input id="otherIncome" class="required-field tax-field" type="number" min="0" step="0.01" value="0"><div class="hint">Annual amount.</div></div>
+              <div class="field"><label for="deductionsAmount">Deductions — W-4 Step 4(b)</label><input id="deductionsAmount" class="required-field tax-field" type="number" min="0" step="0.01" value="0"><div class="hint">Annual amount.</div></div>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label for="extraWithholding">Extra Federal Withholding</label><input id="extraWithholding" class="required-field tax-field" type="number" min="0" step="0.01" value="0"><div class="hint">W-4 Step 4(c), per paycheck.</div></div>
+              <div class="field"><label for="stateWithholding">State Income Tax Per Paycheck</label><input id="stateWithholding" class="required-field tax-field" type="number" min="0" step="0.01" value="0"><div class="hint">Texas employees normally leave this at $0.</div></div>
+            </div>
+            <button class="btn btn-primary" id="saveSettings">Save Pay & Tax Settings</button>
+            <div class="footer-note">Uses 2026 federal withholding estimates plus employee Social Security and Medicare. Each person can save their own W-4-style settings in their browser.</div>
           </div>
-        </div>
+        </section>
 
-        <div class="field-grid">
-          <div class="field">
-            <label for="qualifyingChildren">Qualifying Children Under 17</label>
-            <input id="qualifyingChildren" class="required-field tax-field" type="number" min="0" step="1" value="0">
+        <section class="card">
+          <h2>Add Work Day</h2>
+          <div class="field"><label for="workDate">Date</label><input id="workDate" class="required-field" type="date"></div>
+          <div class="field-grid">
+            <div class="field"><label for="clockIn">Clock In</label><input id="clockIn" class="required-field" type="time"></div>
+            <div class="field"><label for="clockOut">Clock Out</label><input id="clockOut" class="required-field" type="time"></div>
           </div>
-
-          <div class="field">
-            <label for="otherDependents">Other Dependents</label>
-            <input id="otherDependents" class="required-field tax-field" type="number" min="0" step="1" value="0">
+          <div class="field-grid">
+            <div class="field"><label for="breakMinutes">Unpaid Break Minutes</label><input id="breakMinutes" class="required-field" type="number" min="0" step="1" value="0"></div>
+            <div class="field"><label for="notes">Notes</label><input id="notes" class="required-field" type="text" placeholder="Optional"></div>
           </div>
-        </div>
+          <button class="btn btn-primary" id="addEntry">Save Work Day</button>
+        </section>
+      </div>
 
-        <div class="field-grid">
-          <div class="field">
-            <label for="otherIncome">Other Income — W-4 Step 4(a)</label>
-            <input id="otherIncome" class="required-field tax-field" type="number" min="0" step="0.01" value="0">
-            <div class="hint">Annual amount.</div>
-          </div>
-
-          <div class="field">
-            <label for="deductionsAmount">Deductions — W-4 Step 4(b)</label>
-            <input id="deductionsAmount" class="required-field tax-field" type="number" min="0" step="0.01" value="0">
-            <div class="hint">Annual amount.</div>
-          </div>
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="extraWithholding">Extra Federal Withholding</label>
-            <input id="extraWithholding" class="required-field tax-field" type="number" min="0" step="0.01" value="0">
-            <div class="hint">W-4 Step 4(c), per paycheck.</div>
-          </div>
-
-          <div class="field">
-            <label for="stateWithholding">State Income Tax Per Paycheck</label>
-            <input id="stateWithholding" class="required-field tax-field" type="number" min="0" step="0.01" value="0">
-            <div class="hint">Texas employees normally leave this at $0.</div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" id="saveSettings">Save Pay & Tax Settings</button>
-
-        <div class="footer-note">
-          Uses 2026 federal withholding estimates plus employee Social Security and Medicare. Each person can save their own W-4-style settings in their browser.
-        </div>
-        </div>
+      <section class="summary tax-summary">
+        <div class="summary-box"><div class="label">Pay Period Hours</div><div class="value" id="totalHours">0.00</div></div>
+        <div class="summary-box"><div class="label">Gross Pay</div><div class="value" id="grossPay">$0.00</div></div>
+        <div class="summary-box"><div class="label">Federal Tax</div><div class="value" id="federalTax">$0.00</div></div>
+        <div class="summary-box"><div class="label">Social Security</div><div class="value" id="socialSecurity">$0.00</div></div>
+        <div class="summary-box"><div class="label">Medicare</div><div class="value" id="medicare">$0.00</div></div>
+        <div class="summary-box"><div class="label">State Tax</div><div class="value" id="stateTax">$0.00</div></div>
+        <div class="summary-box"><div class="label">Total Taxes</div><div class="value" id="deductions">$0.00</div></div>
       </section>
 
-      <section class="card">
-        <h2>Add Work Day</h2>
-
-        <div class="field">
-          <label for="workDate">Date</label>
-          <input id="workDate" class="required-field" type="date">
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="clockIn">Clock In</label>
-            <input id="clockIn" class="required-field" type="time">
-          </div>
-
-          <div class="field">
-            <label for="clockOut">Clock Out</label>
-            <input id="clockOut" class="required-field" type="time">
-          </div>
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="breakMinutes">Unpaid Break Minutes</label>
-            <input id="breakMinutes" class="required-field" type="number" min="0" step="1" value="0">
-          </div>
-
-          <div class="field">
-            <label for="notes">Notes</label>
-            <input id="notes" class="required-field" type="text" placeholder="Optional">
-          </div>
-        </div>
-
-        <button class="btn btn-primary" id="addEntry">Save Work Day</button>
-      </section>
-    </div>
-
-    <section class="summary tax-summary">
-      <div class="summary-box">
-        <div class="label">Pay Period Hours</div>
-        <div class="value" id="totalHours">0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">Gross Pay</div>
-        <div class="value" id="grossPay">$0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">Federal Tax</div>
-        <div class="value" id="federalTax">$0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">Social Security</div>
-        <div class="value" id="socialSecurity">$0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">Medicare</div>
-        <div class="value" id="medicare">$0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">State Tax</div>
-        <div class="value" id="stateTax">$0.00</div>
-      </div>
-      <div class="summary-box">
-        <div class="label">Total Taxes</div>
-        <div class="value" id="deductions">$0.00</div>
-      </div>
-    </section>
-
-    <section class="take-home">
-      <div class="small">Estimated Take-Home Pay</div>
-      <div class="amount" id="takeHomePay">$0.00</div>
-      <div class="detail" id="periodLabel">Current Tuesday–Monday pay period</div>
-    </section>
-
-    <section class="card entries">
-      <h2>Saved Work Days</h2>
-      <div id="entriesList"></div>
-    </section>
+      <section class="take-home"><div class="small">Estimated Take-Home Pay</div><div class="amount" id="takeHomePay">$0.00</div><div class="detail" id="periodLabel">Current Tuesday–Monday pay period</div></section>
+      <section class="card entries"><h2>Saved Work Days</h2><div id="entriesList"></div></section>
     </section>
 
     <section id="historyPanel" class="tab-panel">
-      <section class="card">
-        <h2>Previous Paychecks</h2>
-        <p class="subtitle" style="margin-bottom:18px;">
-          Prior payroll periods are kept here automatically from the same saved work entries.
-        </p>
-        <div id="historyList" class="history-grid"></div>
-      </section>
+      <section class="card"><h2>Previous Paychecks</h2><p class="subtitle" style="margin-bottom:18px;">Prior payroll periods are kept here automatically from the same saved work entries.</p><div id="historyList" class="history-grid"></div></section>
     </section>
-    <footer class="site-footer">
-      <div>© 2026 API LLC. All rights reserved.</div>
-      <div class="footer-links">
-        <a href="#" onclick="return false;" aria-label="Contact Us">Contact Us</a>
-        <a href="#" onclick="return false;" aria-label="More Apps">More Apps</a>
-      </div>
-    </footer>
+
+    <footer class="site-footer"><div>© 2026 API LLC. All rights reserved.</div><div class="footer-links"><a href="#" onclick="return false;" aria-label="Contact Us">Contact Us</a><a href="#" onclick="return false;" aria-label="More Apps">More Apps</a></div></footer>
   </main>
 
   <script src="app.js"></script>
+  <script>
+    // After settings are saved, get the setup panel out of the way.
+    // The existing arrow can reopen it at any time and that choice is remembered.
+    document.getElementById('saveSettings').addEventListener('click', function () {
+      if (Number(document.getElementById('wage').value) > 0) {
+        document.getElementById('payTaxContent').classList.add('hidden');
+        document.getElementById('togglePayTax').classList.add('collapsed');
+        document.getElementById('togglePayTax').setAttribute('aria-expanded', 'false');
+        localStorage.setItem('workPayTrackerPayTaxCollapsedV1', '1');
+      }
+    });
+  </script>
 </body>
 </html>
