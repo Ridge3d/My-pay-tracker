@@ -101,6 +101,44 @@ The app is built with:
 
 No server or database is currently required.
 
+## GitHub Pages Deployment
+
+This repository is configured to work as a static GitHub Pages site. The `.nojekyll` file tells GitHub Pages to serve the files directly without Jekyll processing.
+
+To publish it with GitHub Pages:
+
+1. Open the repository on GitHub.
+2. Go to **Settings → Pages**.
+3. Under **Build and deployment**, select **Deploy from a branch**.
+4. Select the `main` branch and the `/ (root)` folder.
+5. Save the setting.
+
+GitHub will provide a public Pages URL after deployment finishes.
+
+## Vercel Deployment
+
+The repository includes a `vercel.json` file and is configured as a static HTML/CSS/JavaScript project. No build command is required.
+
+To deploy with Vercel:
+
+1. Sign in to Vercel.
+2. Choose **Add New → Project**.
+3. Import the `Ridge3d/My-pay-tracker` GitHub repository.
+4. Leave the framework preset as **Other** or allow Vercel to auto-detect the static project.
+5. Leave Build Command and Output Directory empty unless Vercel fills them automatically.
+6. Deploy.
+
+After the GitHub repository is connected, future pushes to `main` can automatically create new production deployments, while other branches can be used for preview deployments.
+
+## Repository Structure
+
+- `index.html` — main application page
+- `styles.css` — visual styling
+- `app.js` — application logic and calculations
+- `README.md` — project documentation
+- `vercel.json` — Vercel configuration
+- `.nojekyll` — GitHub Pages static-site configuration
+
 ## Future Ideas
 
 Possible future improvements include:
