@@ -1,0 +1,37 @@
+const PAYROLL_COLLAPSE_KEY="workPayTrackerPayrollCollapsedV1";
+const PAYROLL_DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const payrollDefaults={payFrequency:"weekly",paydayWeekday:5,periodStartWeekday:2,biweeklyAnchor:"",semiSplitDay:15,semiPayday1:15,semiPayday2:31,monthlyStartDay:1,monthlyPayday:31};
+Object.assign(settings,payrollDefaults,settings);
+
+const p=id=>document.getElementById(id);
+const pEls={payFrequency:p("payFrequency"),paydayWeekday:p("paydayWeekday"),periodStartWeekday:p("periodStartWeekday"),biweeklyAnchor:p("biweeklyAnchor"),semiSplitDay:p("semiSplitDay"),semiPayday1:p("semiPayday1"),semiPayday2:p("semiPayday2"),monthlyStartDay:p("monthlyStartDay"),monthlyPayday:p("monthlyPayday"),save:p("savePayroll"),toggle:p("togglePayroll"),content:p("payrollContent"),summary:p("payrollSummary"),badge:p("payrollBadge")};
+
+function pLocalDate(s){return new Date(s+"T12:00:00")}
+function pISO(d){const o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10)}
+function pAddDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function pOrdinal(n){if(Number(n)===31)return"last day";n=Number(n);const v=n%100,s=(v>=11&&v<=13)?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th");return`${n}${s}`}
+function payPeriodsPerYear(){return({weekly:52,biweekly:26,semimonthly:24,monthly:12})[settings.payFrequency]||52}
+function payFrequencyLabel(){return({weekly:"Weekly",biweekly:"Biweekly",semimonthly:"Twice Monthly",monthly:"Monthly"})[settings.payFrequency]||"Weekly"}
+function paydayLabel(){if(settings.payFrequency==="weekly"||settings.payFrequency==="biweekly")return PAYROLL_DAYS[Number(settings.paydayWeekday||0)];if(settings.payFrequency==="semimonthly")return`${pOrdinal(settings.semiPayday1)} & ${pOrdinal(settings.semiPayday2)}`;return pOrdinal(settings.monthlyPayday)}
+function payrollSummaryText(){if(settings.payFrequency==="weekly")return`Weekly • ${PAYROLL_DAYS[Number(settings.periodStartWeekday)]}–${PAYROLL_DAYS[(Number(settings.periodStartWeekday)+6)%7]} • Paid ${paydayLabel()}`;if(settings.payFrequency==="biweekly")return`Biweekly • 14-day periods starting ${PAYROLL_DAYS[Number(settings.periodStartWeekday)]} • Paid ${paydayLabel()}`;if(settings.payFrequency==="semimonthly")return`Twice Monthly • 1–${settings.semiSplitDay} & ${Number(settings.semiSplitDay)+1}–end • Paid ${paydayLabel()}`;return`Monthly • Starts ${pOrdinal(settings.monthlyStartDay)} • Paid ${paydayLabel()}`}
+
+function showScheduleFields(){const f=pEls.payFrequency.value;document.querySelectorAll(".frequency-weekly,.frequency-biweekly,.frequency-semimonthly,.frequency-monthly").forEach(x=>x.classList.add("schedule-hidden"));document.querySelectorAll(`.frequency-${f}`).forEach(x=>x.classList.remove("schedule-hidden"));if(typeof updateRequiredFieldColors==="function")updateRequiredFieldColors()}
+
+pEls.payFrequency.value=settings.payFrequency;pEls.paydayWeekday.value=settings.paydayWeekday;pEls.periodStartWeekday.value=settings.periodStartWeekday;pEls.biweeklyAnchor.value=settings.biweeklyAnchor||"";pEls.semiSplitDay.value=settings.semiSplitDay;pEls.semiPayday1.value=settings.semiPayday1;pEls.semiPayday2.value=settings.semiPayday2;pEls.monthlyStartDay.value=settings.monthlyStartDay;pEls.monthlyPayday.value=settings.monthlyPayday;
+pEls.payFrequency.addEventListener("change",showScheduleFields);showScheduleFields();
+
+getPayPeriod=function(dateString){const d=pLocalDate(dateString),freq=settings.payFrequency||"weekly";if(freq==="weekly"){const sd=Number(settings.periodStartWeekday||0),diff=(d.getDay()-sd+7)%7,start=pAddDays(d,-diff);return{start:pISO(start),end:pISO(pAddDays(start,6))}}if(freq==="biweekly"){let anchor=settings.biweeklyAnchor?pLocalDate(settings.biweeklyAnchor):null;if(!anchor){const sd=Number(settings.periodStartWeekday||0),diff=(d.getDay()-sd+7)%7;anchor=pAddDays(d,-diff)}const dayDiff=Math.round((d-anchor)/86400000),block=Math.floor(dayDiff/14),start=pAddDays(anchor,block*14);return{start:pISO(start),end:pISO(pAddDays(start,13))}}if(freq==="semimonthly"){const split=Math.max(1,Math.min(27,Number(settings.semiSplitDay||15))),y=d.getFullYear(),m=d.getMonth();if(d.getDate()<=split)return{start:pISO(new Date(y,m,1,12)),end:pISO(new Date(y,m,split,12))};return{start:pISO(new Date(y,m,split+1,12)),end:pISO(new Date(y,m+1,0,12))}}const sd=Math.max(1,Math.min(28,Number(settings.monthlyStartDay||1))),y=d.getFullYear(),m=d.getMonth();let start=new Date(y,m,sd,12);if(d<start)start=new Date(y,m-1,sd,12);const next=new Date(start.getFullYear(),start.getMonth()+1,sd,12);return{start:pISO(start),end:pISO(pAddDays(next,-1))}};
+
+calculatePayrollTaxes=function(gross){const periods=payPeriodsPerYear(),annual=gross*periods,adjusted=Math.max(0,annual+Number(settings.otherIncome||0)-Number(settings.deductionsAmount||0)),credit=Number(settings.qualifyingChildren||0)*2200+Number(settings.otherDependents||0)*500,tentative=annualFederalTax(adjusted,settings.filingStatus||"single",(settings.step2||"no")==="yes"),federal=Math.max(0,(tentative-credit)/periods)+Number(settings.extraWithholding||0),socialSecurity=gross*.062,medicare=gross*.0145,state=Number(settings.stateWithholding||0);return{federal,socialSecurity,medicare,state,total:federal+socialSecurity+medicare+state}};
+
+function updatePayrollDisplay(){const t=payrollSummaryText();pEls.summary.textContent=t;pEls.badge.textContent=t}
+function setPayrollCollapsed(c){pEls.content.classList.toggle("hidden",c);pEls.toggle.classList.toggle("collapsed",c);pEls.toggle.setAttribute("aria-expanded",String(!c));localStorage.setItem(PAYROLL_COLLAPSE_KEY,c?"1":"0")}
+const savedPayrollCollapse=localStorage.getItem(PAYROLL_COLLAPSE_KEY);setPayrollCollapsed(savedPayrollCollapse==="1");pEls.toggle.addEventListener("click",()=>setPayrollCollapsed(!pEls.content.classList.contains("hidden")));
+
+const originalRender=render,originalRenderHistory=renderHistory;
+render=function(){originalRender();const period=getPayPeriod(els.workDate.value||todayISO());els.periodLabel.textContent=`${formatDate(period.start)} – ${formatDate(period.end)} • ${payFrequencyLabel()} • Paid ${paydayLabel()}`};
+renderHistory=function(){originalRenderHistory();document.querySelectorAll(".history-subtitle").forEach(x=>x.textContent=`${payFrequencyLabel()} paycheck • Paid ${paydayLabel()}`)};
+
+pEls.save.addEventListener("click",()=>{settings.payFrequency=pEls.payFrequency.value;settings.paydayWeekday=Number(pEls.paydayWeekday.value);settings.periodStartWeekday=Number(pEls.periodStartWeekday.value);settings.biweeklyAnchor=pEls.biweeklyAnchor.value;settings.semiSplitDay=Math.max(1,Math.min(27,Number(pEls.semiSplitDay.value||15)));settings.semiPayday1=Math.max(1,Math.min(31,Number(pEls.semiPayday1.value||15)));settings.semiPayday2=Math.max(1,Math.min(31,Number(pEls.semiPayday2.value||31)));settings.monthlyStartDay=Math.max(1,Math.min(28,Number(pEls.monthlyStartDay.value||1)));settings.monthlyPayday=Math.max(1,Math.min(31,Number(pEls.monthlyPayday.value||31)));if(settings.payFrequency==="biweekly"){if(!settings.biweeklyAnchor){alert("Please enter a known biweekly pay-period start date.");return}settings.periodStartWeekday=pLocalDate(settings.biweeklyAnchor).getDay();pEls.periodStartWeekday.value=settings.periodStartWeekday}saveAll();updatePayrollDisplay();render();renderHistory();setPayrollCollapsed(true);pEls.save.textContent="Saved ✓";setTimeout(()=>pEls.save.textContent="Save Payroll Schedule",1100)});
+
+updatePayrollDisplay();render();renderHistory();
