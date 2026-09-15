@@ -1,0 +1,26 @@
+{
+  "id": "/?pwa=work-time-v1",
+  "name": "Work Time & Pay Tracker",
+  "short_name": "Work Time",
+  "description": "Track work time, pay periods, hours, and estimated take-home pay.",
+  "start_url": "/?pwa=work-time-v1",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/work-time-icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/work-time-icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
