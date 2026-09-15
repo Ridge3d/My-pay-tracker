@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <rect x="5" y="5" width="182" height="182" rx="35" fill="none" stroke="#1e3a5f" stroke-width="4"/>
+  <circle cx="96" cy="77" r="49" fill="#020617" stroke="url(#ring)" stroke-width="8"/>
+  <g stroke="#f8fafc" stroke-linecap="round">
+    <path d="M96 45v35l24 18" stroke-width="9"/>
+    <path d="M96 34v8M96 112v8M53 77h8M131 77h8" stroke-width="5" opacity=".9"/>
+  </g>
+  <circle cx="96" cy="77" r="5" fill="#34d399"/>
+  <circle cx="139" cy="42" r="20" fill="#052e2b" stroke="#34d399" stroke-width="3"/>
+  <text x="139" y="50" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="23" font-weight="800" fill="#a7f3d0">$</text>
+  <text x="96" y="150" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="900" letter-spacing="1" fill="#f8fafc">WORK TIME</text>
+  <path d="M49 160h94" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/>
+</svg>
